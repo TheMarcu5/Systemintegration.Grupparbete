@@ -34,16 +34,16 @@ public class sqlConnection {
         sqlObject datapoint = new sqlObject();
         List<sqlObject> datapointList =  new ArrayList<>();
         Properties p = new Properties();
-        p.load(new FileInputStream("C:\\Users\\marti\\Documents\\NetBeansProjects\\webserviceIn2\\src\\main\\java\\webservice\\sqlproperies.properties"));
+        p.load(new FileInputStream("C:\\Users\\marti\\Documents\\NetBeansProjects\\TempcontrollServer\\src\\main\\java\\Control\\sqlproperies.properties"));
            try (        
             Connection con = DriverManager.getConnection(p.getProperty("connectionString"), p.getProperty("name"), p.getProperty("password"));
-                        PreparedStatement stmt = con.prepareStatement("SELECT * FROM Data");)
+                        PreparedStatement stmt = con.prepareStatement("SELECT * FROM data");)
                         {
                         ResultSet rs = stmt.executeQuery();     
             while (rs.next()) {
                 datapoint = new sqlObject();
-                datapoint.setHallId(rs.getInt("DeviceID"));
-                datapoint.setTemperature(rs.getFloat("Temperature"));
+                datapoint.setHallId(rs.getInt("iddata"));
+                datapoint.setTemperature(rs.getInt("temperature"));
                 datapointList.add(datapoint);
             }
         }
