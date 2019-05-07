@@ -34,7 +34,7 @@ public class sqlConnection {
         sqlObject datapoint = new sqlObject();
         List<sqlObject> datapointList =  new ArrayList<>();
         Properties p = new Properties();
-        p.load(new FileInputStream("C:\\Users\\marti\\Documents\\NetBeansProjects\\webserviceIn2\\src\\main\\java\\webservice\\sqlproperies.properties"));
+        p.load(new FileInputStream("C:\\Users\\marcu\\Java\\SystemintGrupparbete\\GrupparbeteIntegration\\src\\main\\java\\webservice\\Settings.properties"));
            try (        
             Connection con = DriverManager.getConnection(p.getProperty("connectionString"), p.getProperty("name"), p.getProperty("password"));
                         PreparedStatement stmt = con.prepareStatement("SELECT * FROM Data");)
