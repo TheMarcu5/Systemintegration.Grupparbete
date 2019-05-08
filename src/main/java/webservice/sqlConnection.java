@@ -20,12 +20,12 @@ public class sqlConnection {
    
     public sqlConnection()
     {
-        try{
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
+//        try{
+//        Class.forName("com.mysql.cj.jdbc.Driver");
+//        }
+//        catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
     
     public List<sqlObject> getValues() throws SQLException, FileNotFoundException, IOException
@@ -35,10 +35,13 @@ public class sqlConnection {
         List<sqlObject> datapointList =  new ArrayList<>();
         Properties p = new Properties();
         p.load(new FileInputStream("C:\\Users\\marcu\\Java\\SystemintGrupparbete\\GrupparbeteIntegration\\src\\main\\java\\webservice\\Settings.properties"));
-           try (        
+           try   {
+               Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection(p.getProperty("connectionString"), p.getProperty("name"), p.getProperty("password"));
-                        PreparedStatement stmt = con.prepareStatement("SELECT * FROM Data");)
-                        {
+                        PreparedStatement stmt = con.prepareStatement("SELECT * FROM Data");
+//            Connection con = DriverManager.getConnection("iot18grupparbete.crkcsxh8msun.us-east-2.rds.amazonaws.com","iot18grupparbete","kanelbulle18");
+//                        PreparedStatement stmt = con.prepareStatement("SELECT * FROM Data");
+                        
                         ResultSet rs = stmt.executeQuery();     
             while (rs.next()) {
                 datapoint = new sqlObject();
