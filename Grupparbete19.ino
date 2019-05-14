@@ -11,10 +11,8 @@
 
 #define DHT_PIN 2
 #define DHT_TYPE DHT11
-#define TWELVE_HRS 60000UL
-
-#define LED 16  
-
+#define ONE_HOUR 3600000
+#define LED 16
 bool ledState = false;
 
 int pinButton = 4;
@@ -23,7 +21,6 @@ int stateButton;
 int previous = LOW;
 long theTime = 0;
 long debounce = 200;
-
 
 unsigned long startTime;
 static DHT dht(DHT_PIN, DHT_TYPE);
@@ -56,100 +53,74 @@ void setup() {
   initWifi();
   WiFi.hostByName("iot18grupparbete.crkcsxh8msun.us-east-2.rds.amazonaws.com", server_ip);
   startTime = millis();
-  pinMode(LED, OUTPUT);   
+  pinMode(LED, OUTPUT);
   pinMode(pinButton, INPUT);
 }
-void theLedStatus(int temp)
-{
-    if (temp > 20){
-    tempAlert = true;
-    
-    digitalWrite(LED, HIGH);
-    //delay(6000);
-    ledStatus = true;
-    
-    }
 
-    else {
-    tempAlert = false;
-    
-    digitalWrite(LED, LOW);
-    ledStatus = false;
-      
-    }
 
-}
+void sendToSQL(int stateLed) {
 
-void sendToSQL(int stateLed){
-  
   int temp = dht.readTemperature();
   int hum = dht.readHumidity();
-      
+
   char INSERT_SQL[] = "INSERT INTO iot18storage.Data (DeviceID, Status, Temperature, Humidity) VALUES ( %d, %d, %d, %d)";
   char query[128];
   char msg[10];
 
-  ledstatus = stateLed; 
-  
+  ledstatus = stateLed;
+
   dtostrf(50.125, 1, 1, msg);
   sprintf(query, INSERT_SQL, deviceID, ledstatus, temp, hum, msg);
 
   Serial.println("Connecting...");
   if (conn.connect(server_ip, 3306, user, password)) {
-    
+
     delay(1000);
     Serial.println("Connected to SQL.");
 
     MySQL_Cursor *cur_mem = new MySQL_Cursor(&conn);
     cur_mem->execute(query);
     delete cur_mem;
-    
     delay(6000);
 
-        }
-    else
-      Serial.println("Connection to SQL failed.");
+  }
+  else
+    Serial.println("Connection to SQL failed.");
     conn.close();
 
-  }
+}
 
-  void loop() {
+void loop() {
 
-  stateButton = digitalRead(pinButton);  
-    
-  if(stateButton == HIGH && previous == LOW && millis() - theTime > debounce) {
-    if(stateLED == HIGH){
-      stateLED = LOW; 
-       Serial.println("STATELED = LOW");
-    } else {
-       stateLED = HIGH; 
-        Serial.println("STATELED = HIGH");
-       
+  while (millis() - startTime < ONE_HOUR) {
+
+    stateButton = digitalRead(pinButton);
+    delay(200);
+
+    if (stateButton == HIGH && previous == LOW && millis() - theTime > debounce) {
+
+      if (stateLED == HIGH) {
+        stateLED = LOW;
+        Serial.println("LED is now OFF");
+
+      } else {
+        stateLED = HIGH;
+        Serial.println("LED is now ON");
+      }
+
+      theTime = millis();
     }
-    theTime = millis();
-  }
-  digitalWrite(LED, stateLED);
-  previous == stateButton;
 
-  delay(200);
+    digitalWrite(LED, stateLED);
+    previous == stateButton;
+    delay(200);
 
-
-    if (millis() - startTime > TWELVE_HRS) {
+    if (millis() - startTime > ONE_HOUR) {
 
       Serial.println("TIMES UP!");
       sendToSQL(stateLED);
-
-    startTime = millis();
-  }
-
-  else {
-
-    Serial.print("Temperature: ");
-    Serial.println(dht.readTemperature());
-
-    Serial.print("Humidity: ");
-    Serial.println(dht.readHumidity());
-    delay(3000);
+      startTime = millis();
+    }
 
   }
 
