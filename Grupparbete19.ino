@@ -11,10 +11,8 @@
 
 #define DHT_PIN 2
 #define DHT_TYPE DHT11
-#define TWELVE_HRS 60000UL
-
+#define ONE_HOUR 3600000
 #define LED 16
-
 bool ledState = false;
 
 int pinButton = 4;
@@ -23,7 +21,6 @@ int stateButton;
 int previous = LOW;
 long theTime = 0;
 long debounce = 200;
-
 
 unsigned long startTime;
 static DHT dht(DHT_PIN, DHT_TYPE);
@@ -84,56 +81,47 @@ void sendToSQL(int stateLed) {
     MySQL_Cursor *cur_mem = new MySQL_Cursor(&conn);
     cur_mem->execute(query);
     delete cur_mem;
-
     delay(6000);
 
   }
   else
     Serial.println("Connection to SQL failed.");
-  conn.close();
+    conn.close();
 
 }
 
 void loop() {
 
-  while (millis() - startTime < TWELVE_HRS)
+  while (millis() - startTime < ONE_HOUR) {
 
-  {
+    stateButton = digitalRead(pinButton);
+    delay(200);
 
-  stateButton = digitalRead(pinButton);
-  delay(200);
+    if (stateButton == HIGH && previous == LOW && millis() - theTime > debounce) {
 
-  if (stateButton == HIGH && previous == LOW && millis() - theTime > debounce){
-    
-    if (stateLED == HIGH) {
-      stateLED = LOW;
-      Serial.println("STATELED = LOW");
-      delay(200);
-      
-    } else {
-      stateLED = HIGH;
-      Serial.println("STATELED = HIGH");
-      delay(200);
+      if (stateLED == HIGH) {
+        stateLED = LOW;
+        Serial.println("LED is now OFF");
+
+      } else {
+        stateLED = HIGH;
+        Serial.println("LED is now ON");
+      }
+
+      theTime = millis();
     }
-    
-    theTime = millis();
-    
+
+    digitalWrite(LED, stateLED);
+    previous == stateButton;
+    delay(200);
+
+    if (millis() - startTime > ONE_HOUR) {
+
+      Serial.println("TIMES UP!");
+      sendToSQL(stateLED);
+      startTime = millis();
+    }
+
   }
-  
-  digitalWrite(LED, stateLED);
-  previous == stateButton;
-  delay(200);
 
-    if (millis() - startTime > TWELVE_HRS) { //ändra till WHILE NOT TIME IS UP
-
-    Serial.println("TIMES UP!");
-
-    sendToSQL(stateLED);
-
-    startTime = millis();
-  }
-  
-    
-  }
-  
 }
