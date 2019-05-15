@@ -5,79 +5,67 @@
  */
 package webservice;
 
+import java.sql.Timestamp;
+
 public class sqlObject {
     
-    private int hallId;
+    private int status;
     private float temperature;
-    private float consumption;
-    private float cost;
-    private String date;
+    private float humidity;
+    private String type;
+    private Timestamp inserted;
+    private Timestamp created;
 
-    
-    public String getDate() {
-        return date;
-    }
-    
-    public void setDate(String date)
-    {
-        this.date = date;
+    public int getStatus() {
+        return status;
     }
 
-    /**
-     * @return the hallId
-     */
-    public int getHallId() {
-        return hallId;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
-    /**
-     * @param hallId the hallId to set
-     */
-    public void setHallId(int hallId) {
-        this.hallId = hallId;
-    }
-
-    /**
-     * @return the temperature
-     */
     public float getTemperature() {
         return temperature;
     }
 
-    /**
-     * @param temperature the temperature to set
-     */
     public void setTemperature(float temperature) {
         this.temperature = temperature;
     }
 
-    /**
-     * @return the consumption
-     */
-    public float getConsumption() {
-        return consumption;
+    public float getHumidity() {
+        return humidity;
     }
 
-    /**
-     * @param consumption the consumption to set
-     */
-    public void setConsumption(float consumption) {
-        this.consumption = consumption;
+    public void setHumidity(float humidity) {
+        this.humidity = humidity;
     }
 
-    /**
-     * @return the cost
-     */
-    public float getCost() {
-        return cost;
+    public String getType() {
+        return type;
     }
 
-    /**
-     * @param cost the cost to set
-     */
-    public void setCost(float cost) {
-        this.cost = cost;
+    public void setType(String type) {
+        this.type = type;
     }
+
+    public Timestamp getInserted() {
+        return inserted;
+    }
+
+    public void setInserted(Timestamp inserted) {
+        this.inserted = inserted;
+    }
+
+    public Timestamp getCreated() {
+        return created;
+    }
+
+    public void setCreated(Timestamp created) {
+        this.created = created;
+    }
+
+    
+
     
     
 }
