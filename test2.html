@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>JavaScript - read JSON from URL</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+
+<body>
+	<iframe src="http://192.168.43.111/" width="400" height="400" align="right"></iframe>
+    <div class="mypanel"></div>
+    <script>
+    $.getJSON('http://localhost:8080/webserviceIn2/rest/webservice/currentstatus?callback=', function(data) {
+        var tableData = '<table><tr><td>consumption</td><td>cost</td><td>hallId</td><td>temperatur</td></tr>';
+		$.each(data, function(index, data) {
+		tableData += '<tr><td>'+data.consumption+'</td><td>'+data.cost+'</td><td>'+data.hallId+'</td><td>'+data.temperature+'</td></tr>';
+	});
+
+$('div').html(tableData);
+    });
+    </script>
+
+</body>
+</html>
